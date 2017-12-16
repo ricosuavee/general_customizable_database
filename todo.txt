@@ -1,0 +1,8 @@
+# todo.txt
+# a list of next steps 
+
+- read through all of will's code
+-
+-
+-
+- break script into modules and packages... eventually!
