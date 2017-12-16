@@ -32,7 +32,7 @@ def get_date():
     """
     return datetime.date.today().strftime("%Y-%m-%d")
 
-# WORK ON THIS FUNCTION
+## WORK ON THIS FUNCTION
 #def view_tables(db):
 #     """
 #     List all of the tables housed in a .db file
@@ -44,10 +44,8 @@ def get_date():
 ## CURSORS and CONNECTIONS ##
 
 def open_connection(db):
-
     dbname = workdir + db
     print(dbname)
-
     # Return dbname as either opened or new .db file
     return sqlite3.connect(dbname)
 
@@ -194,6 +192,7 @@ working_db = input_db()
 working_tab = input_tab()
 working_date = get_date()
 print(working_date)
+open_connection(working_db)
 #working_list = budget_input()
 #add_row_to_table(working_db, working_tab, working_list)
 #check_changes(working_db, working_tab)
