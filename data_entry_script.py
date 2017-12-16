@@ -1,13 +1,16 @@
 import sqlite3
 import datetime
 
+# Working directory for this project
+workdir = '/Users/ryanmcelroy/Desktop/ryan/coding/general_customizable_database/'
+
+# ==========================================================================
+## To Do ##
 # Break into modules and packages. It will be more useful this way.
 
-##
-# Working directory for this project
-workdir = '/Users/henriqueswi/Dropbox/Personal/Projects/SQL_budget_data/'
 
-## Helper Functions
+# ==========================================================================
+## HELPER FUNCTIONS ##
 
 def input_db():
     """
@@ -29,14 +32,16 @@ def get_date():
     """
     return datetime.date.today().strftime("%Y-%m-%d")
 
-# def view_tables(db):
+# WORK ON THIS FUNCTION
+#def view_tables(db):
 #     """
 #     List all of the tables housed in a .db file
 #     """
-#
 #     SELECT name FROM my_db.sqlite_master WHERE type='table';
 
-## Opening and closing cursor objects
+
+# ==========================================================================
+## CURSORS and CONNECTIONS ##
 
 def open_connection(db):
 
@@ -47,7 +52,9 @@ def open_connection(db):
     return sqlite3.connect(dbname)
 
 
-## Data entry
+# ==========================================================================
+## DATA ENTRY ##
+
 def budget_list():
     """
     Prompts users for six entries to populate a budget-specific table
@@ -139,7 +146,8 @@ def add_row_to_table(db, table, input_list):
 
     connection.close()
 
-## Data verification
+# ==========================================================================
+## DATA VERIFICATION ##
 
 def check_changes(db, table):
     """
@@ -164,32 +172,32 @@ def check_changes(db, table):
     connection.close()
 
 
- # Need a function to modify rows individually by their entry code in
- #      case of data entry errors.
+# ==========================================================================
+## USER INTERFACE FUNCTIONS ##
 
-
-## User interface functions
+# Need a function to modify rows individually by their entry code in
+#      case of data entry errors.
 
 # Instead of relying on the user to input a "type" of database,
-#       ask the user to either create or open a .db file and table. 
+#       ask the user to either create or open a .db file and table.
 
 # If the user wants to update a database, pull the table names
 
 # If the user wants to update a table, pull the table names
 
 
-## Running the Program
- # MAIN
-#input_function()
+# ==========================================================================
+## RUNNING THE PROGRAM ##
+
+print("Running data_entry_script.py")
 working_db = input_db()
-
 working_tab = input_tab()
-
-working_list = budget_input()
-
-add_row_to_table(working_db, working_tab, working_list)
-
-check_changes(working_db, working_tab)
-
-
+working_date = get_date()
+print(working_date)
+#working_list = budget_input()
+#add_row_to_table(working_db, working_tab, working_list)
+#check_changes(working_db, working_tab)
 print("Success")
+
+
+# ==========================================================================
