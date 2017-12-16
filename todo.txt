@@ -1,8 +1,11 @@
 # todo.txt
-# a list of next steps 
+# a list of next steps
 
 - read through all of will's code
--
--
+- make "budget_list()" generic with col headers in table...
+    - import column names
+    - for column names, request user input
+    - make dynamic for whatever the headings / table content
+- work on proxy drop-down menu for dynamic category input
 -
 - break script into modules and packages... eventually!
