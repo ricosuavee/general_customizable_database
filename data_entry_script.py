@@ -223,6 +223,7 @@ cur = open_database()
 #view_tables(cur)
 #view_columns(cur)
 
+
 #working_list = budget_input()
 #add_row_to_table(working_db, working_tab, working_list)
 #check_changes(working_db, working_tab)
