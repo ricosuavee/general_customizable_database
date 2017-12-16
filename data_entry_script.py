@@ -6,7 +6,8 @@ workdir = '/Users/ryanmcelroy/Desktop/ryan/coding/general_customizable_database/
 
 # ==========================================================================
 ## To Do ##
-# Break into modules and packages. It will be more useful this way.
+# - Break into modules and packages.
+# -
 
 
 # ==========================================================================
@@ -16,7 +17,12 @@ def input_db():
     """
     Prompts user for a .db file
     """
-    input_db = raw_input("Database name (must have .db extension): ")
+    name = raw_input("Database to open or edit: ")
+    if name.endswith('.db'):
+        input_db = name
+    else:
+        input_db = name + '.db'
+    print input_db
     return input_db
 
 def input_tab():
@@ -215,7 +221,7 @@ print("Today's date is {} ".format(get_date()))
 cur = open_database()
 
 #view_tables(cur)
-view_columns(cur)
+#view_columns(cur)
 
 #working_list = budget_input()
 #add_row_to_table(working_db, working_tab, working_list)
