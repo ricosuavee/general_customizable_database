@@ -4,11 +4,6 @@ import datetime
 # Working directory for this project
 workdir = '/Users/ryanmcelroy/Desktop/ryan/coding/general_customizable_database/'
 
-# ==========================================================================
-## To Do ##
-# - Break into modules and packages.
-# -
-
 
 # ==========================================================================
 ## HELPER FUNCTIONS ##
@@ -88,8 +83,8 @@ def budget_list():
     """
     # perhaps shift these variable names to col1, col2, etc, so that they apply not just to a budget, but any table
     # The text can be substituted with column headers eg. Enter <col1_header>:
-    src = raw_input("Enter expenses source: ")
-    nts = raw_input("Any notes? Enter here: ")
+    src = raw_input("Enter expenses source: \t\t")
+    nts = raw_input("Any notes? Enter here: \t\t")
 
     # Here I could create a proxy drop-down menu with print statements and creative use of variables, with single letter codings
     # eg entertainment = e, transportation = t, daily_living = d, etc
@@ -97,14 +92,78 @@ def budget_list():
     # eg if tier_one == "e", print a menu with all the "types" from that category
 
     # but for now, to test, just a crude text entry:
-    cat = raw_input("Enter expenses category: ")
-    typ = raw_input("Enter category type: ")
-    dat = raw_input("Enter date (YYYY-MM-DD, numeric values only): ")
-    amt = float(raw_input("Enter amount: "))
+    cat = raw_input("Enter expenses category: \t")
+    typ = raw_input("Enter category type: \t\t")
+    dat = raw_input("Enter date (YYYY-MM-DD): \t")
+    amt = float(raw_input("Enter amount: \t\t\t"))
 
     entry_list = [src, nts, cat, typ, dat, amt]
     print entry_list
     return entry_list
+
+## -------------------------------------------------------------------------
+## Working on 'menu' of options and matching...
+
+def r_budget_list():
+        """
+        (Ryan's version of the budget_list() funciton)
+        Prompts users to populate a budget-specific table
+        Entries: source, notes, category, type, date, amount
+        """
+        # perhaps shift these variable names to col1, col2, etc, so that they apply not just to a budget, but any table
+        # The text can be substituted with column headers eg. Enter <col1_header>:
+        src = raw_input("Enter expenses source: \t\t")
+        nts = raw_input("Any notes? Enter here: \t\t")
+
+        # Here I could create a proxy drop-down menu with print statements and creative use of variables, with single letter codings
+        # eg entertainment = e, transportation = t, daily_living = d, etc
+        # Then, with a long if statement, I could create the options for the second tier...it would be like a crude drop down menu
+        # eg if tier_one == "e", print a menu with all the "types" from that category
+
+        # but for now, to test, just a crude text entry:
+        cat = raw_input("Enter expenses category: \t")
+        typ = raw_input("Enter category type: \t\t")
+        dat = raw_input("Enter date (YYYY-MM-DD): \t")
+        amt = float(raw_input("Enter amount: \t\t\t"))
+
+        entry_list = [src, nts, cat, typ, dat, amt]
+        print entry_list
+        return entry_list
+
+# need a function that reads in column names
+
+# need a function that reads in category names from column 'category'
+
+def list_to_unique():
+    """
+    Returns set of unique objects from potentially repetitive list
+    """
+    lst = ['groceries', 'eating out', 'home goods', 'eating out', 'eating out', 'home goods', 'groceries', 'groceries', 'outdoor rec', 'home goods', 'groceries', 'home goods', 'home goods', 'home goods', 'home goods', 'home goods', 'eating out']
+    cat_set = set(lst)
+    print cat_set
+    return cat_set
+
+def test_input(incoming_set):
+    """
+    Allows for short-hand user input when typing from a set of options.
+    If input non-existant, alerts user of new item creation.
+    """
+    user_input = raw_input("enter category:\t")
+    for i in incoming_set:
+        #print i
+        #print i.startswith(user_input)
+        if i.startswith(user_input):
+            yn = raw_input("Did you mean '{}'?\t".format(i))
+            if yn == 'y':
+                break
+    else:
+        print("New category '{}' created.".format(user_input))
+
+## -------------------------------------------------------------------------
+
+
+
+
 
 def budget_input():
     """
@@ -218,10 +277,14 @@ def check_changes(db, table):
 print("Running data_entry_script.py...")
 print("Today's date is {} ".format(get_date()))
 
-cur = open_database()
+#cur = open_database()
 
 #view_tables(cur)
 #view_columns(cur)
+
+#budget_list()
+categories = list_to_unique()
+test_input(categories)
 
 
 #working_list = budget_input()
