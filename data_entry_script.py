@@ -38,31 +38,42 @@ def get_date():
 
 def open_connection(db):
     """
-    Connect to 'db' and return active cursor
+    Returns active cursor connection with database file
     """
     dbname = workdir + db
     # print(dbname)
     return sqlite3.connect(dbname).cursor()
 
+def open_database():
+    """
+    Returns cursor connection to database file of user's choice
+    """
+    return open_connection(input_db())
+
 
 # ==========================================================================
-## DATA ENTRY ##
-
-## some helpful code...
-#        cur = con.cursor()
-#        cur.execute('SELECT * FROM ' + table)
-#        col_names = [cn[0] for cn in cur.description]
-#        rows = cur.fetchall()
-#        print_header(col_names)
-#        print_output(rows)
-#        con.close()
+## DATA NAVIGATION ##
 
 def view_tables(cur):
      """
-     List all of the tables housed in a .db file given a cursor connection.
+     Lists all tables housed in a .db file given cursor connection.
      """
      cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
      print(cur.fetchall())
+
+def view_columns(cur):
+    """
+    Lists all columns in table of a .db file given cursor connection.
+    """
+    table = raw_input("Table name: ")
+    cur.execute('SELECT * FROM ' + table)
+    col_names = [cn[0] for cn in cur.description]
+    rows = cur.fetchall()
+    print(col_names)
+
+
+# ==========================================================================
+## DATA ENTRY ##
 
 def budget_list():
     """
@@ -201,8 +212,10 @@ def check_changes(db, table):
 print("Running data_entry_script.py...")
 print("Today's date is {} ".format(get_date()))
 
-cur = open_connection(input_db())
-view_tables(cur)
+cur = open_database()
+
+#view_tables(cur)
+view_columns(cur)
 
 #working_list = budget_input()
 #add_row_to_table(working_db, working_tab, working_list)
