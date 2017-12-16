@@ -32,26 +32,37 @@ def get_date():
     """
     return datetime.date.today().strftime("%Y-%m-%d")
 
-## WORK ON THIS FUNCTION
-#def view_tables(db):
-#     """
-#     List all of the tables housed in a .db file
-#     """
-#     SELECT name FROM my_db.sqlite_master WHERE type='table';
-
 
 # ==========================================================================
 ## CURSORS and CONNECTIONS ##
 
 def open_connection(db):
+    """
+    Connect to 'db' and return active cursor
+    """
     dbname = workdir + db
-    print(dbname)
-    # Return dbname as either opened or new .db file
-    return sqlite3.connect(dbname)
+    # print(dbname)
+    return sqlite3.connect(dbname).cursor()
 
 
 # ==========================================================================
 ## DATA ENTRY ##
+
+## some helpful code...
+#        cur = con.cursor()
+#        cur.execute('SELECT * FROM ' + table)
+#        col_names = [cn[0] for cn in cur.description]
+#        rows = cur.fetchall()
+#        print_header(col_names)
+#        print_output(rows)
+#        con.close()
+
+def view_tables(cur):
+     """
+     List all of the tables housed in a .db file given a cursor connection.
+     """
+     cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
+     print(cur.fetchall())
 
 def budget_list():
     """
@@ -187,16 +198,16 @@ def check_changes(db, table):
 # ==========================================================================
 ## RUNNING THE PROGRAM ##
 
-print("Running data_entry_script.py")
-working_db = input_db()
-working_tab = input_tab()
-working_date = get_date()
-print(working_date)
-open_connection(working_db)
+print("Running data_entry_script.py...")
+print("Today's date is {} ".format(get_date()))
+
+cur = open_connection(input_db())
+view_tables(cur)
+
 #working_list = budget_input()
 #add_row_to_table(working_db, working_tab, working_list)
 #check_changes(working_db, working_tab)
-print("Success")
+print("Success. Closing script.")
 
 
 # ==========================================================================
