@@ -1,0 +1,6 @@
+
+- look over rymac131 code 
+- identify next step in code that does not rely on rymac131's project
+-or, work on rymac131 sideproject until it is functional and incorporate it into the code
+- i think that an important next step will be building out the functions that are wrappers for SQL, for verifying and editing entered data 
+- another aspect that could be worked on is a package that imports and exports .xlsx and .csv files 
