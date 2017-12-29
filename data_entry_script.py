@@ -2,8 +2,18 @@ import sqlite3
 import datetime
 
 # Working directory for this project
-workdir = '/Users/ryanmcelroy/Desktop/ryan/coding/general_customizable_database/'
+def set_wd():
+    """
+    Allows flexibility in working directory between developes
+    Should be included in running of the program for all tests
+    """
+    print "Enter the full path for your working directory"
 
+    workdir = raw_input("File path: \t")
+
+    print "You've set your working directory to:"
+    print workdir
+    return workdir
 
 # ==========================================================================
 ## HELPER FUNCTIONS ##
@@ -282,6 +292,9 @@ print("Running data_entry_script.py...")
 
 #view_tables(cur)
 #view_columns(cur)
+
+# Set the working directory
+set_wd()
 
 r_budget_list()
 
