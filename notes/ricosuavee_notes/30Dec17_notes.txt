@@ -1,0 +1,16 @@
+I've stripped down the script data_entry_script.py so that it simply opens a database, creates a cursor, and then commits any changes made and closes the connection. 
+
+Current problems: 
+1) I'm not sure if a .db file is actually being created, and if it is, it is not saving in the specified working directory
+
+2) I'm not sure whether a connection should be open for the duration of the script's runtime. Is this a potential security issue? 
+
+3) I'm not sure whether the same cursor should be used for all commands for the duration of the scripts run. It has the potential to streamline the code, so unless it's a security issue, I think it might be a good idea. 
+
+Next steps: 
+
+- Determine if 2 + 3 are issues 
+- Get .db file to save in specified working directory
+- Create a table in the database and save changes
+
+
