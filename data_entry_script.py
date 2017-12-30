@@ -302,6 +302,8 @@ workdir = set_wd()
 #/home/ricosuave/Dropbox/personal/projects/coding/general_customizable_database/test
 print 1
 
+# This works, but the .db file is not being saved in workdir
+
 working_db = input_db()
 
 # cur is an active cursor from a database connection w/ working_db file
