@@ -24,14 +24,28 @@ def input_db():
     Prompts user for a .db filename
     Returns string of .db filename
     Note: this function does not open a connection to an SQLite DB
+    Return type: string
     """
     name = raw_input("Database to open or edit: ")
     if name.endswith('.db'):
         input_db = name
     else:
         input_db = name + '.db'
+    print "This is the file name"
     print input_db
     return input_db
+
+def add_file_path(db_str, dir_str):
+    """
+    Input: string of .db filename, string with directory in which to find/create .db file
+    Attaches the given directory to the .db file to return string of the full file path
+    Return type: string
+    """
+    full_path = dir_str + db_str
+
+    print "This is the full file path"
+    print full_path
+    return full_path
 
 def input_tab():
     """
@@ -71,17 +85,70 @@ def close_db_connection(connection):
     connection.close()
     print "The connection has been closed"
 
-# ==========================================================================
+# =============================================== ===========================
 ## DATA NAVIGATION ##
 
+## Table navigation ##
 def view_tables(cur):
      """
      Lists all tables housed in a .db file given cursor connection.
+     Return type: list
      """
      cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
      print "The db currently contains these tables \n"
      print(cur.fetchall())
 
+def create_table_if_not_exists(cursor, table, input_list):
+    """
+    Writes an input list to a specified table in a specified database
+    If the database does not exist, it will be created
+    If the table does not exist within the database, it will be created
+    Return type: Null (edits table with .db file)
+    """
+    #cursor.execute("""DROP TABLE test_budget;""")
+
+    list_len = len(input_list)
+    print list_len
+
+    sql_command = "CREATE TABLE IF NOT EXISTS " + table + " (entry_number INTEGER PRIMARY KEY, " + input_list[0] + " VARCHAR(30)," + input_list[1]+ " VARCHAR(60)," + input_list[2] + " VARCHAR(20)," + input_list[3] + " VARCHAR(20)," + input_list[4] + " DATE," + input_list[5] + " FLOAT," + input_list[6] + " DATE);"
+
+    print sql_command
+    # sql_command = "CREATE TABLE IF NOT EXISTS " + table + "(entry_number INTEGER PRIMARY KEY, source VARCHAR(30),notes VARCHAR(60), category VARCHAR (20), type VARCHAR (20), transaction_date DATE, amount FLOAT, entry_date DATE);"
+    cursor.execute(sql_command)
+    #connection.commit()
+    #connection.close()
+
+def add_row_to_table(db, table, input_list):
+    """
+    Creates a new entry in a table with the contents of an input_list
+    """
+    connection = open_connection(db)
+    cursor = connection.cursor()
+
+    #print("We got here")
+    #print(input_list)
+    #print(len(input_list))
+
+    todays_date = get_date()
+    input_list.append(todays_date)
+
+     #if input_list[0] != NULL:
+         #input_list.insert(0, NULL)
+
+    input_tup = tuple(input_list)
+    print("Data to be added to the table:")
+    print(input_tup)
+
+    insert_string = "INSERT INTO {tn} VALUES (NULL,?,?,?,?,?,?,?)"
+    cursor.execute(insert_string.format(tn = table), input_tup)
+
+    # Saves the changes
+    print(connection.total_changes)
+    connection.commit()
+
+    connection.close()
+
+## Within table navigation ##
 def view_columns(cur):
     """
     Lists all columns in table of a .db file given cursor connection.
@@ -182,10 +249,6 @@ def test_input(incoming_set, input_type):
 
 ## -------------------------------------------------------------------------
 
-
-
-
-
 def budget_input():
     """
     Checks if the user would like to enter a budget item
@@ -200,56 +263,6 @@ def budget_input():
     else:
         print("Error: 'y' or 'n' required as input")
         budget_input()
-
-def create_table_if_not_exists(cursor, table, input_list):
-    """
-    Writes an input list to a specified table in a specified database
-    If the database does not exist, it will be created
-    If the table does not exist within the database, it will be created
-    """
-    # Can this be more general? Right now it's pretty specific to a budget
-
-    # Opens a cursor object
-    # A cursor is used to traverse the records from the result set
-    #connection = open_connection(db)
-
-    #cursor = connection.cursor()
-    #cursor.execute("""DROP TABLE test_budget;""")
-
-    sql_command = "CREATE TABLE IF NOT EXISTS " + table + "(entry_number INTEGER PRIMARY KEY, source VARCHAR(30),notes VARCHAR(60), category VARCHAR (20), type VARCHAR (20), transaction_date DATE, amount FLOAT, entry_date DATE);"
-    cursor.execute(sql_command)
-    #connection.commit()
-    #connection.close()
-
-def add_row_to_table(db, table, input_list):
-    """
-    Creates a new entry in a table with the contents of an input_list
-    """
-    connection = open_connection(db)
-    cursor = connection.cursor()
-
-    #print("We got here")
-    #print(input_list)
-    #print(len(input_list))
-
-    todays_date = get_date()
-    input_list.append(todays_date)
-
-     #if input_list[0] != NULL:
-         #input_list.insert(0, NULL)
-
-    input_tup = tuple(input_list)
-    print("Data to be added to the table:")
-    print(input_tup)
-
-    insert_string = "INSERT INTO {tn} VALUES (NULL,?,?,?,?,?,?,?)"
-    cursor.execute(insert_string.format(tn = table), input_tup)
-
-    # Saves the changes
-    print(connection.total_changes)
-    connection.commit()
-
-    connection.close()
 
 # ==========================================================================
 ## DATA VERIFICATION ##
@@ -298,32 +311,34 @@ print("Running data_entry_script.py...\n")
 print("Today's date is {} \n".format(get_date()))
 
 # Set the working directory
+
 workdir = set_wd()
-#/home/ricosuave/Dropbox/personal/projects/coding/general_customizable_database/test
 print 1
 
-# This works, but the .db file is not being saved in workdir
+# working_db generates the full path + file name of working Database
+# Note: Does not actually open a connection to any database
+working_db = add_file_path(input_db(), workdir)
 
-working_db = input_db()
-
-# cur is an active cursor from a database connection w/ working_db file
-# the issue here is that the connection is inaccessible
+#conn is an open connection to the working database
 conn = open_db_connection(working_db)
+# cur is an active cursor from a database connection w/ working_db file
 cur = create_cursor(conn)
 
-
-close_db_connection(conn)
-
 print 2
-#view_tables(cur)
+view_tables(cur)
 
 print 2.1
-
-#test_tab = input_tab()
+test_tab = input_tab()
 
 print 2.2
-#test_list = ["t1", "t2", "t3"]
-#create_table_if_not_exists(cur, test_tab, test_list)
+test_list = ["t1", "t2", "t3","t4", "t5", "t6","t7"]
+create_table_if_not_exists(cur, test_tab, test_list)
+
+print 2.3
+view_tables(cur)
+
+print 2.4
+close_db_connection(conn)
 
 print 3
 #view_columns(cur)
