@@ -1,0 +1,22 @@
+Today I resolved the question of where the .db file is being created and added functionality so that the .db file created in the specified working directory. A connection created a second time accesses the same .db file (if the same name is given, otherwise, new name, new .db file)
+
+As for the security questions I had about keeping the connection and cursor open while running the application, it looks like for this specific application, in which each user will have an individual database, it is OK to leave the connection open for the duration of the application/script run. As for the cursor object, it doesn't appear to matter if it is closed or not (/might not even be possible to close a cursor). So for the time being, I will build up functionality keeping a single connection open for the duration of the script's run. I believe this will simplify the code and make it more readable. 
+
+My next step is to create a flexible function for table creation. Specifically, I want to focus on creating functionality that allows the user to specify the name of the column and the type of data allowed in that column. Given the user input, the script will then assemble the necessary SQLite commands under the covers to create the table. 
+
+My idea for general formatting of this interface at the CL: 
+Add column (y/n):
+Column name: 
+
+Below are the possible data types:
+Text## (## = number of characters allowed...max = ??)  
+Number 
+Date
+
+Enter data type: 
+
+Add column (y/n): 
+
+etc... 
+
+My idea is to store column names and data types in separate lists, and then use a for loop to assemble the SQLite command 
