@@ -1,0 +1,15 @@
+Today I worked on defining several functions that will enable more flexibility with table creation. The goal is to allow users to define the number, name, and data type of the columns in a table they are creating. So, for example, this single script would be robust to creating a budget table, a book list table, a recipe table, etc. 
+
+Functions developed: 
+col_question
+num_columns
+col_names
+input_data_types
+assembling_columns
+
+
+The next step for me will be to add a function that takes the output of the "assembling_columns" function, and builds it into a string SQLite command, which can then be used to create the table. 
+
+So within the flow of the program as a whole, today and  tomorrow's work is mostly concerned with table creation. 
+
+Note: Commenting out most of the script not in use facilitates more rapid code testing. 

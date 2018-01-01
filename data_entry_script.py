@@ -115,8 +115,6 @@ def create_table_if_not_exists(cursor, table, input_list):
     print sql_command
     # sql_command = "CREATE TABLE IF NOT EXISTS " + table + "(entry_number INTEGER PRIMARY KEY, source VARCHAR(30),notes VARCHAR(60), category VARCHAR (20), type VARCHAR (20), transaction_date DATE, amount FLOAT, entry_date DATE);"
     cursor.execute(sql_command)
-    #connection.commit()
-    #connection.close()
 
 def add_row_to_table(db, table, input_list):
     """
@@ -148,6 +146,93 @@ def add_row_to_table(db, table, input_list):
 
     connection.close()
 
+##  Defining columns for a table ##
+def col_question():
+    """
+    dependencies: calls assembling_columns()
+    Return type: List or null list
+    """
+    answer = raw_input("\tWould you like to define table columns (y/n)\t")
+    if answer == 'y':
+        print # Formatting print statement
+        return input_col_names()
+    elif answer == 'n':
+        return []
+    else:
+        print "'y' and 'n' are the only options. Please pick one"
+
+def num_columns():
+    """
+    Establishes the number of columns to be added to a table
+    Return type: int
+    """
+    answer = raw_input("\tHow many columns would you like to add? \n\t (Answer must be an integer):\t")
+    count = 0
+    return int(answer)
+
+def col_names():
+    """
+    Prompts user to enter string for column name
+    dependencies: none
+    Return type: string
+    """
+    col_input = raw_input("Enter column name:\t")
+
+    return col_input
+
+def input_data_types():
+    """
+    Prompts user to enter data types
+    Function dependence: None
+    Return type: string
+    """
+    # Create menu of options for the user
+    print "These are the available data types"
+    print "\ttext# --- A text field(# = number of possible characters allowed. Max = 255)"
+    print "\tnum   --- A real number field"
+    print "\tdate  --- A field for entering the date"
+
+    data_type = raw_input("Enter data type for this column:\t ")
+
+
+    # Verify that the data type matches one of the three options
+    if data_type[0:4] == "text" and int(data_type[4:])<=255 or data_type == "num" or data_type == "date":
+        return data_type
+    else:
+        print "Data type must be input exactly as displayed in the menu"
+        return input_data_types()
+
+def assembling_columns():
+    """
+    Prompts user for number of num_columns
+    Asks user to enter name and data type for each new columns
+    Returns a list of tuples of column names and data types
+    dependencies: num_columns(), col_names(), input_data_types()
+    Return type: list of tuples
+    """
+    #Initialize empty master list
+    master_list = []
+
+    col_count = num_columns()
+    count = 0
+    while count < col_count:
+        col_name = col_names()
+        col_type = input_data_types()
+
+        # Make a list pairing column name and data type
+        col_list = [col_name, col_type]
+        # Convert list to tuple so it is immutable
+        col_tuple = tuple(col_list)
+        master_list.append(col_tuple)
+        count = count + 1
+
+
+    print "These are the column names and data types"
+    return master_list
+
+
+
+
 ## Within table navigation ##
 def view_columns(cur):
     """
@@ -162,7 +247,6 @@ def view_columns(cur):
 
 # ==========================================================================
 ## DATA ENTRY ##
-
 def budget_list():
     """
     Prompts users for six entries to populate a budget-specific table
@@ -187,6 +271,7 @@ def budget_list():
     entry_list = [src, nts, cat, typ, dat, amt]
     print entry_list
     return entry_list
+
 
 ## -------------------------------------------------------------------------
 ## Ryan's working on 'menu' of options and matching for source and category...
@@ -312,44 +397,48 @@ print("Today's date is {} \n".format(get_date()))
 
 # Set the working directory
 
-workdir = set_wd()
-print 1
+# workdir = set_wd()
+# print 1
+#
+# # working_db generates the full path + file name of working Database
+# # Note: Does not actually open a connection to any database
+# working_db = add_file_path(input_db(), workdir)
+#
+# #conn is an open connection to the working database
+# conn = open_db_connection(working_db)
+# # cur is an active cursor from a database connection w/ working_db file
+# cur = create_cursor(conn)
+#
+# print 2
+# view_tables(cur)
+#
+# print 2.1
+# test_tab = input_tab()
 
-# working_db generates the full path + file name of working Database
-# Note: Does not actually open a connection to any database
-working_db = add_file_path(input_db(), workdir)
+print 2.11
+col_list = assembling_columns()
 
-#conn is an open connection to the working database
-conn = open_db_connection(working_db)
-# cur is an active cursor from a database connection w/ working_db file
-cur = create_cursor(conn)
-
-print 2
-view_tables(cur)
-
-print 2.1
-test_tab = input_tab()
-
+print col_list
 print 2.2
-test_list = ["t1", "t2", "t3","t4", "t5", "t6","t7"]
-create_table_if_not_exists(cur, test_tab, test_list)
+#test_list = ["t1", "t2", "t3","t4", "t5", "t6","t7"]
+#create_table_if_not_exists(cur, test_tab, test_list)
 
 print 2.3
-view_tables(cur)
-
-print 2.4
-close_db_connection(conn)
-
-print 3
-#view_columns(cur)
-
-#r_budget_list()
-print 4
-#working_list = budget_input()
-print 5
-#add_row_to_table(working_db, working_tab, working_list)
-print 6
-#check_changes(working_db, working_tab)
+# view_tables(cur)
+#
+# print 2.4
+# close_db_connection(conn)
+#
+# print 3
+# #view_columns(cur)
+#
+# #r_budget_list()
+# print 4
+# #working_list = budget_input()
+# print 5
+# #add_row_to_table(working_db, working_tab, working_list)
+# print 6
+# #check_changes(working_db, working_tab)
 print("Success. Closing script.")
 
 
