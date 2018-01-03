@@ -6,6 +6,7 @@ def set_wd():
     """
     Allows flexibility in working directory between developes
     Should be included in running of the program for all tests
+    Return type: string
     """
     print "Enter the full path for your working directory"
 
@@ -50,6 +51,7 @@ def add_file_path(db_str, dir_str):
 def input_tab():
     """
     Prompts user for the name of a table inside a .db file
+    Return type: string
     """
     input_tab = raw_input("Table name: ")
     return input_tab
@@ -57,6 +59,7 @@ def input_tab():
 def get_date():
     """
     Returns current date in YYYY-MM-DD format
+    Return type: string
     """
     return datetime.date.today().strftime("%Y-%m-%d")
 
@@ -67,6 +70,7 @@ def get_date():
 def open_db_connection(db):
     """
     Returns connection with specified database file
+    Return type: connection object
     """
     # print(dbname)
     return sqlite3.connect(db)
@@ -74,12 +78,14 @@ def open_db_connection(db):
 def create_cursor(connection):
     """
     Returns active cursor
+    Return type: cursor method of connection
     """
     return connection.cursor()
 
 def close_db_connection(connection):
     """
     This method should save changes and closes a db connection
+    Return type: null
     """
     connection.commit()
     connection.close()
@@ -97,24 +103,6 @@ def view_tables(cur):
      cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
      print "The db currently contains these tables \n"
      print(cur.fetchall())
-
-def create_table_if_not_exists(cursor, table, input_list):
-    """
-    Writes an input list to a specified table in a specified database
-    If the database does not exist, it will be created
-    If the table does not exist within the database, it will be created
-    Return type: Null (edits table with .db file)
-    """
-    #cursor.execute("""DROP TABLE test_budget;""")
-
-    list_len = len(input_list)
-    print list_len
-
-    sql_command = "CREATE TABLE IF NOT EXISTS " + table + " (entry_number INTEGER PRIMARY KEY, " + input_list[0] + " VARCHAR(30)," + input_list[1]+ " VARCHAR(60)," + input_list[2] + " VARCHAR(20)," + input_list[3] + " VARCHAR(20)," + input_list[4] + " DATE," + input_list[5] + " FLOAT," + input_list[6] + " DATE);"
-
-    print sql_command
-    # sql_command = "CREATE TABLE IF NOT EXISTS " + table + "(entry_number INTEGER PRIMARY KEY, source VARCHAR(30),notes VARCHAR(60), category VARCHAR (20), type VARCHAR (20), transaction_date DATE, amount FLOAT, entry_date DATE);"
-    cursor.execute(sql_command)
 
 def add_row_to_table(db, table, input_list):
     """
@@ -230,8 +218,43 @@ def assembling_columns():
     print "These are the column names and data types"
     return master_list
 
+def assemble_sql_create_tbl(tuple_list, table_name):
+    """
+    Input type: list of tuples
+    Note: Input is intended to come from assembling_columns() fxn
+    Given a list of tuple pairs, return a CREATE TABLE IF NOT EXISTS SQLite command
+    Return type: string
+    """
+    #    Issue flag: The three SQLite data types used here are DATE, VARCHAR, and FLOAT. If numbers put into FLOAT columns are integers, will this cause a problem?
 
+    sql_str = "CREATE TABLE IF NOT EXISTS " + table_name + " (entry_number INTEGER PRIMARY KEY"
 
+    for (col_name, data_type) in tuple_list:
+        sql_str = sql_str + ", " + col_name
+
+        if data_type[0:4] == "text":
+            sql_str = sql_str + " VARCHAR" + "(" + data_type[4:] + ")"
+        elif data_type == "num":
+            sql_str = sql_str + " FLOAT"
+        else:
+            sql_str = sql_str + " DATE"
+
+    sql_str = sql_str + ");"
+
+    # Returns a string
+    return sql_str
+
+## Creating a table from defined columns ##
+def create_table_if_not_exists(cursor, sql_command):
+    """
+    Given a string SQLite command and a cursor object, executes the CREATE TABLE IF NOT EXISTS SQLite command
+    dependencies: relies on output from assemble_sql_create_tbl() and create_cursor()
+    Return type: Null (creates or edits table with .db file)
+    """
+
+    #cursor.execute("""DROP TABLE test_budget;""")
+
+    cursor.execute(sql_command)
 
 ## Within table navigation ##
 def view_columns(cur):
@@ -243,7 +266,6 @@ def view_columns(cur):
     col_names = [cn[0] for cn in cur.description]
     rows = cur.fetchall()
     print(col_names)
-
 
 # ==========================================================================
 ## DATA ENTRY ##
@@ -395,41 +417,45 @@ def check_changes(db, table):
 print("Running data_entry_script.py...\n")
 print("Today's date is {} \n".format(get_date()))
 
+## Test block WH ##
+# The following block goes through the following step (numbers correspond to print statements)
+# 1) Opens a databate connection and creates a cursor object (open_db_connection(), create_cursor())
+# 2) Inspects tables in the database (view_tables()); prompts user to enter a new table name or current table names (input_tab());
+# 2.1) As if the user had entered a new table name, the script prompts the user to enter column name and data types for a new table (assembling_columns())
+# 2.2)  The script assembles an SQLite command from the input column names and data_types to create the table if it does not exist (assemble_sql_create_tbl())
+# 2.3) The script creates a new table in the database if it does not already exist   
+#=====================================
+
 # Set the working directory
+workdir = set_wd()
+print 1
 
-# workdir = set_wd()
-# print 1
-#
-# # working_db generates the full path + file name of working Database
-# # Note: Does not actually open a connection to any database
-# working_db = add_file_path(input_db(), workdir)
-#
-# #conn is an open connection to the working database
-# conn = open_db_connection(working_db)
-# # cur is an active cursor from a database connection w/ working_db file
-# cur = create_cursor(conn)
-#
-# print 2
-# view_tables(cur)
-#
-# print 2.1
-# test_tab = input_tab()
+# working_db generates the full path + file name of working Database
+# Note: Does not actually open a connection to any database
+working_db = add_file_path(input_db(), workdir)
 
-print 2.11
+#conn is an open connection to the working database
+conn = open_db_connection(working_db)
+# cur is an active cursor from a database connection w/ working_db file
+cur = create_cursor(conn)
+
+print 2
+view_tables(cur)
+test_tab = input_tab()
+print 2.1
 col_list = assembling_columns()
-
-print col_list
 print 2.2
-#test_list = ["t1", "t2", "t3","t4", "t5", "t6","t7"]
-#create_table_if_not_exists(cur, test_tab, test_list)
-
+sql_str = assemble_sql_create_tbl(col_list, test_tab)
+print sql_str
 print 2.3
-# view_tables(cur)
-#
-# print 2.4
-# close_db_connection(conn)
-#
-# print 3
+create_table_if_not_exists(cur, sql_str)
+print "New table " + test_tab + " created"
+view_tables(cur)
+
+print 3
+close_db_connection(conn)
+#=====================================
+
 # #view_columns(cur)
 #
 # #r_budget_list()
