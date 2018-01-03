@@ -1,0 +1,26 @@
+Today I worked on functionality that would assemble an SQLite command for creating a table from a collection of user input. 
+
+Functions developed/edited: 
+assemble_sql_create_tbl()
+create_tbl_if_not_exists
+
+
+Now, when I run the script data_entry_script.py, it runs through the following steps: 
+1) Opens a databate connection and creates a cursor object (open_db_connection(), create_cursor())
+
+ 2) Inspects tables in the database (view_tables()); prompts user to enter a new table name or current table names (input_tab());
+ 2.1) As if the user had entered a new table name, the script prompts the user to enter column name and data types for a new table (assembling_columns())
+
+ 2.2)  The script assembles an SQLite command from the input column names and data_types to create the table if it does not exist (assemble_sql_create_tbl())
+
+ 2.3) The script creates a new table in the database if it does not already exist  
+
+ 2.4) The script inspects tables in the databases again 
+
+ 3) The script closes the database connection.
+
+
+Next steps: 
+Before I merge this branch back to master, I want the script to discern whether the user wants to inspect a table that already exists or create a new table, so that the script doesn't automatically assume the creation of a new table. 
+
+After that, I think it is time to merge this branch back to master. In the future, branches should be much smaller blocks of project. Remember: compartmentalize, build functionality piece by piece! 
