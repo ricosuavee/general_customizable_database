@@ -75,6 +75,9 @@ def open_db_connection(db):
     # print(dbname)
     return sqlite3.connect(db)
 
+def set_output_to_text(connection):
+    connection.text_factory = str
+
 def create_cursor(connection):
     """
     Returns active cursor
@@ -102,7 +105,12 @@ def view_tables(cur):
      """
      cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
      print "The db currently contains these tables \n"
-     print(cur.fetchall())
+     # cur.fetchall returns the table names as a list of tuples
+     tuple_output = (cur.fetchall())
+     print tuple_output
+     str_output = ' '.join(map(str, tuple_output))
+     print str_output
+
 
 def add_row_to_table(db, table, input_list):
     """
@@ -423,7 +431,9 @@ print("Today's date is {} \n".format(get_date()))
 # 2) Inspects tables in the database (view_tables()); prompts user to enter a new table name or current table names (input_tab());
 # 2.1) As if the user had entered a new table name, the script prompts the user to enter column name and data types for a new table (assembling_columns())
 # 2.2)  The script assembles an SQLite command from the input column names and data_types to create the table if it does not exist (assemble_sql_create_tbl())
-# 2.3) The script creates a new table in the database if it does not already exist   
+# 2.3) The script creates a new table in the database if it does not already exist
+# 2.4) The script inspects tables in the databases again
+# 3) The script closes the database connection.
 #=====================================
 
 # Set the working directory
@@ -439,32 +449,36 @@ conn = open_db_connection(working_db)
 # cur is an active cursor from a database connection w/ working_db file
 cur = create_cursor(conn)
 
+# This changes the output from Unicode to UTF-8 (removes "u" from the front of each entry returned by SQLite)
+set_output_to_text(conn)
+
 print 2
 view_tables(cur)
-test_tab = input_tab()
-print 2.1
-col_list = assembling_columns()
-print 2.2
-sql_str = assemble_sql_create_tbl(col_list, test_tab)
-print sql_str
-print 2.3
-create_table_if_not_exists(cur, sql_str)
-print "New table " + test_tab + " created"
-view_tables(cur)
-
-print 3
-close_db_connection(conn)
-#=====================================
-
-# #view_columns(cur)
+# test_tab = input_tab()
+# print 2.1
+# col_list = assembling_columns()
+# print 2.2
+# sql_str = assemble_sql_create_tbl(col_list, test_tab)
+# print sql_str
+# print 2.3
+# create_table_if_not_exists(cur, sql_str)
+# print "New table " + test_tab + " created"
+# print 2.4
+# view_tables(cur)
 #
-# #r_budget_list()
-# print 4
-# #working_list = budget_input()
-# print 5
-# #add_row_to_table(working_db, working_tab, working_list)
-# print 6
-# #check_changes(working_db, working_tab)
+# print 3
+# close_db_connection(conn)
+# #=====================================
+#
+# # #view_columns(cur)
+# #
+# # #r_budget_list()
+# # print 4
+# # #working_list = budget_input()
+# # print 5
+# # #add_row_to_table(working_db, working_tab, working_list)
+# # print 6
+# # #check_changes(working_db, working_tab)
 print("Success. Closing script.")
 
 
