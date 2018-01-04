@@ -1,0 +1,11 @@
+This morning I worked on the view_tables() function. Originally, it returned unicode output, so that the names of the tables displayed with a u in front of them. I added the function set_output_to_text(connection), to be included in the script run, so that tables are displayed as text, not unicode. 
+
+However, I'm still running into the problem of the names of the tables being returned in a list of tuples. The output is somewhat visually confusing, and it also is not amenable to comparison with user input. What I'm trying to work towards is an if statment, formatted generally as: 
+
+for i in list of tables 
+	if i == input_table
+		return view_table_function
+
+print "The table you entered does not exist. Would you like to create a new table? (y/n)?  
+
+If the for loop runs through, then the table does not exist, and the user would be asked if they would like to create a new table. If the for loop finds a match, then it should return a view_table or edit_table function. 
