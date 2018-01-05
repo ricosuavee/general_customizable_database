@@ -1,0 +1,21 @@
+Today was a struggle.
+
+I developed several functions to replace the view_tables() func
+tion.
+
+Functions:
+----------
+- pull_table_names(cur) - pulls the table names from a .db file, converts the output from a list of tuples to a list of strings
+
+- print_table_names(table_list) - prints all the tables present in a .db file
+
+- compare_input_to_db(table_name, table_list) - checks to see if the table name input by the user already exists in the table.
+- view_or_create_table(boolean_value, table_name) - depending on a boolean value returned from compare_input_to_db, asks user
+if they want to edit/view table that already exists or create a table that doesn't exist
+
+- table_fork(cur) - This function weaves together the three previous functions along with input_tab and a collection of column assembly functions. It acts as a fork in the flow of user interaction through the program. Depending on whether a user wants to create a new table or edit/view an existing output, different downstream elements are returned.
+
+==============
+Next steps:
+----------
+The data_entry_script.py file is way too big. It's time to merge this branch, and move onto another branch. The next step is to break data_entry_script.py into smaller .py files and then execute them in a main program run file. I think at this point it's also important to step back and think a little more carefully about the design of this program as a whole, to be sure that I'm working towards and in a manner consistent with a vision about what I want to get out of this program.
